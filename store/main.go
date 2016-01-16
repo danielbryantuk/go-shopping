@@ -8,6 +8,8 @@ import (
 	"html/template"
 )
 
+const viewDir = "views/"
+
 var sampleProduct Product
 
 func init() {
@@ -40,7 +42,7 @@ func productHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func productViewHandler(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("shopFront.html")
+	t, err := template.ParseFiles(viewDir + "shopFront.html")
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
