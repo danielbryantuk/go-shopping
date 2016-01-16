@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"log"
 	"fmt"
+	"html/template"
 )
 
 var sampleProduct Product
@@ -26,6 +27,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", homeHandler)
 	r.HandleFunc("/product", productHandler)
+	r.HandleFunc("/view/product", productViewHandler)
 	log.Fatal(http.ListenAndServe(":3000", r))
 }
 
@@ -35,4 +37,13 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 
 func productHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%v", sampleProduct)
+}
+
+func productViewHandler(w http.ResponseWriter, r *http.Request) {
+	t, err := template.ParseFiles("shopFront.html")
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		t.Execute(w, sampleProduct)
+	}
 }
