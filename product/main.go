@@ -40,14 +40,18 @@ func handleAllProducts(w http.ResponseWriter, r *http.Request) {
 
 func handleProduct(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	productId:= vars["productId"]
-	product := products[productId]
-	b, err := json.Marshal(product)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, err)
+	productId := vars["productId"]
+	if product, present := products[productId]; present {
+		b, err := json.Marshal(product)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprint(w, err)
+		}
+		w.Write(b)
+	} else {
+		w.WriteHeader(http.StatusNotFound)
 	}
-	w.Write(b)
+
 }
 
 func createProducts() map[string]Product {
