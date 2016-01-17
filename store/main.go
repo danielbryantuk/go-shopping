@@ -28,8 +28,8 @@ type Product struct {
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", homeHandler)
-	r.HandleFunc("/product", productHandler)
-	r.HandleFunc("/view/product", productViewHandler)
+	r.HandleFunc("/products", productHandler)
+	r.HandleFunc("/view/products", productViewHandler)
 	log.Fatal(http.ListenAndServe(storeService, r))
 }
 
@@ -44,25 +44,29 @@ func productHandler(w http.ResponseWriter, r *http.Request) {
 func productViewHandler(w http.ResponseWriter, r *http.Request) {
 	resp, err := http.Get(productService + "products")
 	if err != nil {
-		log.Fatal(err)
+		handleError(w, err)
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		handleError(w, err)
 	}
-	var products map[string]Product
 
+	var products map[string]Product
 	if err := json.Unmarshal(body, &products); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(os.Stderr, err)
+		handleError(w, err)
 	} else {
 		t, err := template.ParseFiles(viewDir + "shopFront.html")
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprint(os.Stderr, err)
+			handleError(w, err)
 		} else {
 			t.Execute(w, products)
 		}
 	}
+}
+
+func handleError(w http.ResponseWriter, err error) {
+	w.WriteHeader(http.StatusInternalServerError)
+	fmt.Fprint(w, err)
+	fmt.Fprint(os.Stderr, err)
 }
