@@ -8,8 +8,9 @@
 <h1>Welcome to the Shop!</h1>
 <p>Product list</p>
 <ul>
-    {{ .Id }}
-    {{ .Name }}
+    {{ range $key, $value := . }}
+    <li>{{ $key }} : {{ $value.Name }} - £{{ $value.Price }}</li>
+    {{ end }}
 </ul>
 
 </body>
