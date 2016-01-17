@@ -8,6 +8,8 @@ import (
 	"fmt"
 )
 
+const productService = "localhost:3010"
+
 var products map[string]Product
 
 func init() {
@@ -26,7 +28,7 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/products", handleAllProducts)
 	router.HandleFunc("/products/{productId}", handleProduct)
-	log.Fatal(http.ListenAndServe(":3000", router))
+	log.Fatal(http.ListenAndServe(productService, router))
 }
 
 func handleAllProducts(w http.ResponseWriter, r *http.Request) {
@@ -51,7 +53,6 @@ func handleProduct(w http.ResponseWriter, r *http.Request) {
 	} else {
 		w.WriteHeader(http.StatusNotFound)
 	}
-
 }
 
 func createProducts() map[string]Product {
