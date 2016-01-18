@@ -14,7 +14,7 @@ import (
 const viewDir = "views"
 
 //service locations - this would obviously be read from an external source
-var storeService = "localhost:" + os.Getenv("SERVICE_PORT")
+var storeService = "localhost:" + os.Getenv("STORE_SERVICE_PORT")
 var productService = os.Getenv("PRODUCT_SERVICE_ADDR")
 
 type Product struct {

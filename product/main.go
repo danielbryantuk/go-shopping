@@ -6,9 +6,10 @@ import (
 	"log"
 	"encoding/json"
 	"fmt"
+	"os"
 )
 
-const productService = "localhost:3010"
+var productService = "localhost:" + os.Getenv("PRODUCT_SERVICE_PORT")
 
 var products map[string]Product
 
