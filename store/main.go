@@ -11,11 +11,11 @@ import (
 	"os"
 )
 
-const viewDir = "views/"
+const viewDir = "views"
 
 //service locations - this would obviously be read from an external source
-const storeService = "localhost:3000"
-const productService = "http://localhost:3010/"
+var storeService = "localhost:" + os.Getenv("SERVICE_PORT")
+var productService = os.Getenv("PRODUCT_SERVICE_ADDR")
 
 type Product struct {
 	Id          string `json:"id"`
@@ -42,7 +42,7 @@ func productHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func productViewHandler(w http.ResponseWriter, r *http.Request) {
-	resp, err := http.Get(productService + "products")
+	resp, err := http.Get(productService + "/products")
 	if err != nil {
 		handleError(w, err)
 	}
@@ -56,7 +56,7 @@ func productViewHandler(w http.ResponseWriter, r *http.Request) {
 	if err := json.Unmarshal(body, &products); err != nil {
 		handleError(w, err)
 	} else {
-		t, err := template.ParseFiles(viewDir + "shopFront.html")
+		t, err := template.ParseFiles(viewDir + "/shopFront.html")
 		if err != nil {
 			handleError(w, err)
 		} else {
