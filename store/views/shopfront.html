@@ -6,12 +6,32 @@
 </head>
 <body>
 <h1>Welcome to the Shop!</h1>
-<p>Product list</p>
-<ul>
+<h2>Product list</h2>
+<p>Please select a product:</p>
+<table>
+    <tr>
+        <td>
+            id
+        </td>
+        <td>
+            Name
+        </td>
+        <td>
+            Description
+        </td>
+        <td>
+            Price
+        </td>
+    </tr>
     {{ range $key, $value := . }}
-    <li>{{ $key }} : {{ $value.Name }} - £{{ $value.Price }}</li>
+    <tr>
+        <td>{{ $key }}</td>
+        <td>{{ $value.Name }}</td>
+        <td>{{ $value.Description }}</td>
+        <td>£{{ $value.Price }}</td>
+    </tr>
     {{ end }}
-</ul>
+</table>
 
 </body>
 </html>
