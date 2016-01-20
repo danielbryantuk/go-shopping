@@ -28,17 +28,12 @@ type Product struct {
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", homeHandler)
-	r.HandleFunc("/products", productHandler)
 	r.HandleFunc("/view/products", productViewHandler)
 	log.Fatal(http.ListenAndServe(storeService, r))
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-}
-
-func productHandler(w http.ResponseWriter, r *http.Request) {
-	//todo
 }
 
 func productViewHandler(w http.ResponseWriter, r *http.Request) {
