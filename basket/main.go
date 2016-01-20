@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"encoding/json"
+	"fmt"
 )
 
 type Basket struct {
@@ -19,6 +20,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", healthHandler)
 	r.HandleFunc("/baskets/{userId}", viewBasketHandler).Methods("GET")
+	r.HandleFunc("/baskets/{userId}/add", addToBasketHandler).Methods("GET")
 	r.HandleFunc("/baskets", updateBasketHandler).Methods("POST")
 	r.HandleFunc("/baskets", viewAllBasketsHandler).Methods("GET")
 	log.Fatal(http.ListenAndServe(":3020", r))
@@ -63,5 +65,20 @@ func viewAllBasketsHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
 		w.Write(b)
+	}
+}
+
+func addToBasketHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("addToBasketHandler entry")
+	vars := mux.Vars(r)
+	userId := vars["userId"]
+
+	err := r.ParseForm()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		productId := r.FormValue("productId")
+		quantity := r.FormValue("quantity")
+		fmt.Printf("%v - %v : %v", userId, productId, quantity)
 	}
 }
