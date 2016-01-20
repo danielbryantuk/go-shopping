@@ -29,6 +29,7 @@
         <td>{{ $value.Name }}</td>
         <td>{{ $value.Description }}</td>
         <td>£{{ $value.Price }}</td>
+        <td><a href="localhost:3020/basket/1?product={{ $key }}&quantity=1">Add to Basket</a></td>
     </tr>
     {{ end }}
 </table>
