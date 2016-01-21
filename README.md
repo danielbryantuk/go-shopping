@@ -19,6 +19,13 @@ export PRODUCT_SERVICE_ADDR=http://localhost:3010
 go run main.go 
 ```
 
+###Basket
+```
+cd basket
+export BASKET_SERVICE_PORT=3020
+go run main.go 
+```
+
 ##TODO
  * Set envs properly for local execution
  * Set envs in Dockerfile
