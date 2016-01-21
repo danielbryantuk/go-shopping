@@ -6,7 +6,10 @@ import (
 	"net/http"
 	"encoding/json"
 	"fmt"
+	"os"
 )
+
+var basketService = "localhost:" + os.Getenv("BASKET_SERVICE_PORT")
 
 type Basket struct {
 	UserId   string `json:"userId"`
@@ -23,7 +26,7 @@ func main() {
 	r.HandleFunc("/baskets/{userId}/add", addToBasketHandler).Methods("GET")
 	r.HandleFunc("/baskets", updateBasketHandler).Methods("POST")
 	r.HandleFunc("/baskets", viewAllBasketsHandler).Methods("GET")
-	log.Fatal(http.ListenAndServe(":3020", r))
+	log.Fatal(http.ListenAndServe(basketService, r))
 }
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
@@ -68,6 +71,7 @@ func viewAllBasketsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//todo - very much WIP!
 func addToBasketHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("addToBasketHandler entry")
 	vars := mux.Vars(r)
@@ -80,5 +84,18 @@ func addToBasketHandler(w http.ResponseWriter, r *http.Request) {
 		productId := r.FormValue("productId")
 		quantity := r.FormValue("quantity")
 		fmt.Printf("%v - %v : %v", userId, productId, quantity)
-	}
+		if val, ok := basketStore[userId]; ok {
+			//we have a basket
+			//update content
+			if basket,ok := val[productId]; ok {
+				//todo
+			}
+		} else {
+			//create products map
+			var products map[string]int32
+			//create new basket
+			basketStore[userId] = products
 }
+}
+}
+
