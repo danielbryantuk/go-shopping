@@ -87,15 +87,15 @@ func addToBasketHandler(w http.ResponseWriter, r *http.Request) {
 		if val, ok := basketStore[userId]; ok {
 			//we have a basket
 			//update content
-			if basket,ok := val[productId]; ok {
+			if basket, ok := val[productId]; ok {
 				//todo
 			}
 		} else {
-			//create products map
 			var products map[string]int32
-			//create new basket
-			basketStore[userId] = products
-}
-}
+			products[productId ] = quantity
+			basket := Basket{userId, products}
+			basketStore[userId] = basket
+		}
+	}
 }
 
