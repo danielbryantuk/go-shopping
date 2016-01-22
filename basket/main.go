@@ -7,13 +7,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 var basketService = "localhost:" + os.Getenv("BASKET_SERVICE_PORT")
 
 type Basket struct {
 	UserId   string `json:"userId"`
-	products map[string]int32 `json:"products"`
+	products map[string]int `json:"products"`
 }
 
 //userId, Basket
@@ -82,26 +83,34 @@ func addToBasketHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
 		productId := r.FormValue("productId")
-		quantity := r.FormValue("quantity")
-		fmt.Printf("%v - %v : %v", userId, productId, quantity)
-		if basket, ok := basketStore[userId]; ok {
-			//we have a basket for the user
-			//update content
-			if _, ok := basket.products[productId]; ok {
-				//bump count
-				basket.products[productId] = basket.products[productId] + quantity
-			} else {
-				//add one more
-				basket.products[productId] = quantity
-				basketStore[userId] = basket
-			}
+		quantityStr := r.FormValue("quantity")
+		quantity, _ := strconv.Atoi(quantityStr)
 
+		fmt.Printf("%v - %v : %v", userId, productId, quantity)
+		updateBasket(userId, productId, quantity)
+
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func updateBasket(userId string, productId string, quantity int) { //todo return bool indicating success
+	if basket, ok := basketStore[userId]; ok {
+		//we have a basket for the user
+		//update content
+		if _, ok := basket.products[productId]; ok {
+			//bump count
+			basket.products[productId] = basket.products[productId] + quantity
 		} else {
-			var products map[string]int32
-			products[productId] = quantity
-			basket = Basket{userId, products}
+			//add one more
+			basket.products[productId] = quantity
 			basketStore[userId] = basket
 		}
+
+	} else {
+		var products = make(map[string]int)
+		products[productId] = quantity
+		basket = Basket{userId, products}
+		basketStore[userId] = basket
 	}
 }
 
