@@ -84,16 +84,22 @@ func addToBasketHandler(w http.ResponseWriter, r *http.Request) {
 		productId := r.FormValue("productId")
 		quantity := r.FormValue("quantity")
 		fmt.Printf("%v - %v : %v", userId, productId, quantity)
-		if val, ok := basketStore[userId]; ok {
-			//we have a basket
+		if basket, ok := basketStore[userId]; ok {
+			//we have a basket for the user
 			//update content
-			if basket, ok := val[productId]; ok {
-				//todo
+			if _, ok := basket.products[productId]; ok {
+				//bump count
+				basket.products[productId] = basket.products[productId] + quantity
+			} else {
+				//add one more
+				basket.products[productId] = quantity
+				basketStore[userId] = basket
 			}
+
 		} else {
 			var products map[string]int32
-			products[productId ] = quantity
-			basket := Basket{userId, products}
+			products[productId] = quantity
+			basket = Basket{userId, products}
 			basketStore[userId] = basket
 		}
 	}
