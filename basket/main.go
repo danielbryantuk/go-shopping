@@ -8,17 +8,10 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"github.com/daniel-bryant-uk/go-shopping/basket/repository"
 )
 
 var basketService = "localhost:" + os.Getenv("BASKET_SERVICE_PORT")
-
-type Basket struct {
-	UserId   string `json:"userId"`
-	Products map[string]int `json:"products"`
-}
-
-//userId, Basket
-var basketStore = make(map[string]Basket)
 
 func main() {
 	r := mux.NewRouter()
@@ -38,7 +31,7 @@ func viewBasketHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("viewBasketHandler entry")
 	vars := mux.Vars(r)
 	userId := vars["userId"]
-	basket, ok := basketStore[userId]
+	basket, ok := repository.GetBasket(userId)
 	if !ok {
 		w.WriteHeader(http.StatusNotFound)
 	} else {
@@ -94,24 +87,5 @@ func addToBasketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func updateBasket(userId string, productId string, quantity int) { //todo return bool indicating success
-	if basket, ok := basketStore[userId]; ok {
-		//we have a basket for the user
-		//update content
-		if _, ok := basket.Products[productId]; ok {
-			//bump count
-			basket.Products[productId] = basket.Products[productId] + quantity
-		} else {
-			//add one more
-			basket.Products[productId] = quantity
-			basketStore[userId] = basket
-		}
 
-	} else {
-		var products = make(map[string]int)
-		products[productId] = quantity
-		basket = Basket{userId, products}
-		basketStore[userId] = basket
-	}
-}
 
