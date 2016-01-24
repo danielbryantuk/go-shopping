@@ -14,7 +14,7 @@ var basketService = "localhost:" + os.Getenv("BASKET_SERVICE_PORT")
 
 type Basket struct {
 	UserId   string `json:"userId"`
-	products map[string]int `json:"products"`
+	Products map[string]int `json:"products"`
 }
 
 //userId, Basket
@@ -64,6 +64,7 @@ func updateBasketHandler(w http.ResponseWriter, r *http.Request) {
 
 func viewAllBasketsHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("viewAllBasketsHandler entry")
+	log.Printf("%v\n", basketStore)
 	b, err := json.Marshal(basketStore)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -86,7 +87,7 @@ func addToBasketHandler(w http.ResponseWriter, r *http.Request) {
 		quantityStr := r.FormValue("quantity")
 		quantity, _ := strconv.Atoi(quantityStr)
 
-		fmt.Printf("%v - %v : %v", userId, productId, quantity)
+		fmt.Printf("UserId: %v - Adding product %v, with quantity %v\n", userId, productId, quantity)
 		updateBasket(userId, productId, quantity)
 
 		w.WriteHeader(http.StatusOK)
@@ -97,12 +98,12 @@ func updateBasket(userId string, productId string, quantity int) { //todo return
 	if basket, ok := basketStore[userId]; ok {
 		//we have a basket for the user
 		//update content
-		if _, ok := basket.products[productId]; ok {
+		if _, ok := basket.Products[productId]; ok {
 			//bump count
-			basket.products[productId] = basket.products[productId] + quantity
+			basket.Products[productId] = basket.Products[productId] + quantity
 		} else {
 			//add one more
-			basket.products[productId] = quantity
+			basket.Products[productId] = quantity
 			basketStore[userId] = basket
 		}
 
