@@ -1,5 +1,9 @@
 package repository
 
+type Basket struct {
+	UserId   string `json:"userId"`
+	Products map[string]int `json:"products"`
+}
 
 //userId, Basket
 var basketStore = make(map[string]Basket)
@@ -38,3 +42,10 @@ func GetBasket(userId string) (Basket, bool) {
 		return nil, false
 	}
 }
+
+
+func SetBasket(userId string, basket Basket) { //todo - return
+	//todo - I don't think this is necessary - just return map access?
+	basketStore[userId] = basket
+}
+

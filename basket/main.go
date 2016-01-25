@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"github.com/daniel-bryant-uk/go-shopping/basket/repository"
+	"repository"
 )
 
 var basketService = "localhost:" + os.Getenv("BASKET_SERVICE_PORT")
@@ -46,19 +46,19 @@ func viewBasketHandler(w http.ResponseWriter, r *http.Request) {
 func updateBasketHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("updateBasketHandler entry")
 	decoder := json.NewDecoder(r.Body)
-	basket := Basket{}
+	basket := repository.Basket{}
 	err := decoder.Decode(&basket)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
-		basketStore[basket.UserId] = basket
+		repository.SetBasket(basket.UserId, basket)
 	}
 }
 
 func viewAllBasketsHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("viewAllBasketsHandler entry")
-	log.Printf("%v\n", basketStore)
-	b, err := json.Marshal(basketStore)
+	log.Printf("%v\n", repository.GetStoreAsMap())
+	b, err := json.Marshal(repository.GetStoreAsMap())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
@@ -81,7 +81,7 @@ func addToBasketHandler(w http.ResponseWriter, r *http.Request) {
 		quantity, _ := strconv.Atoi(quantityStr)
 
 		fmt.Printf("UserId: %v - Adding product %v, with quantity %v\n", userId, productId, quantity)
-		updateBasket(userId, productId, quantity)
+		repository.UpdateBasket(userId, productId, quantity)
 
 		w.WriteHeader(http.StatusOK)
 	}
