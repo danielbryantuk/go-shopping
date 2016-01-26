@@ -13,6 +13,12 @@ import (
 
 var basketService = "localhost:" + os.Getenv("BASKET_SERVICE_PORT")
 
+var repository repository.BasketRepo
+
+func init() {
+	basketRepo = repository.LocalBasketStore{}
+}
+
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", healthHandler)

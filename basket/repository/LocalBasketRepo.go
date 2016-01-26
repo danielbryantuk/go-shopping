@@ -1,14 +1,12 @@
 package repository
 
-type Basket struct {
-	UserId   string `json:"userId"`
-	Products map[string]int `json:"products"`
-}
+type LocalBasketStore struct {
 
+}
 //userId, Basket
 var basketStore = make(map[string]Basket)
 
-func UpdateBasket(userId string, productId string, quantity int) {
+func (*LocalBasketStore) UpdateBasket(userId string, productId string, quantity int) {
 	//todo return bool indicating success
 	if basket, ok := basketStore[userId]; ok {
 		//we have a basket for the user
@@ -30,11 +28,11 @@ func UpdateBasket(userId string, productId string, quantity int) {
 	}
 }
 
-func GetStoreAsMap() (map[string]Basket) {
+func (*LocalBasketStore) GetStoreAsMap() (map[string]Basket) {
 	return basketStore
 }
 
-func GetBasket(userId string) (Basket, bool) {
+func (*LocalBasketStore) GetBasket(userId string) (Basket, bool) {
 	//todo - I don't think this is necessary - just return map access?
 	if basket, ok := basketStore[userId]; ok {
 		return basket, true
@@ -43,8 +41,8 @@ func GetBasket(userId string) (Basket, bool) {
 	}
 }
 
-
-func SetBasket(userId string, basket Basket) { //todo - return
+func (*LocalBasketStore) SetBasket(userId string, basket Basket) {
+	//todo - return
 	//todo - I don't think this is necessary - just return map access?
 	basketStore[userId] = basket
 }
