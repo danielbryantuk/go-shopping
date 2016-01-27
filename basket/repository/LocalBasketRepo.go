@@ -37,7 +37,7 @@ func (*LocalBasketStore) GetBasket(userId string) (Basket, bool) {
 	if basket, ok := basketStore[userId]; ok {
 		return basket, true
 	} else {
-		return nil, false
+		return Basket{}, false // todo return pointer type
 	}
 }
 

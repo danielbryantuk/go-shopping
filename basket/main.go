@@ -8,16 +8,12 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"repository"
+	repo "github.com/daniel-bryant-uk/go-shopping/basket/repository"
 )
 
 var basketService = "localhost:" + os.Getenv("BASKET_SERVICE_PORT")
 
-var repository repository.BasketRepo
-
-func init() {
-	basketRepo = repository.LocalBasketStore{}
-}
+var repository repo.LocalBasketStore
 
 func main() {
 	r := mux.NewRouter()
@@ -52,7 +48,7 @@ func viewBasketHandler(w http.ResponseWriter, r *http.Request) {
 func updateBasketHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("updateBasketHandler entry")
 	decoder := json.NewDecoder(r.Body)
-	basket := repository.Basket{}
+	basket := repo.Basket{}
 	err := decoder.Decode(&basket)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
